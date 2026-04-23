@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datuber</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="nav-left">
+            <img src="sua-foto.png" class="profile-img" onclick="toggleMenu('menuPerfil')" alt="Menu">
+            <span class="site-name">Datuber</span>
+        </div>
+        
+        <div class="nav-center">
+            <input type="text" placeholder="Pesquisar no Datuber..." class="search-bar">
+        </div>
+
+        <div class="nav-right">
+            <span class="brand-text">Datuber</span>
+            <button class="btn-criar" onclick="toggleMenu('menuCriar')">Criar</button>
+            <button id="installBtn" class="btn-install">Instalar App</button>
+        </div>
+
+        <div id="menuPerfil" class="dropdown">
+            <div class="user-info">
+                <img src="sua-foto.png" class="profile-img-large">
+                <p><strong>@SeuNome</strong></p>
+            </div>
+            <hr>
+            <a href="#">Fazer Login</a>
+            <a href="#">Criar Conta</a>
+            <a href="#">Mudar Foto</a>
+            <a href="#">Mudar Idioma</a>
+            <a href="studio.html">Datuber Studio</a>
+        </div>
+
+        <div id="menuCriar" class="dropdown">
+            <a href="studio.html?tipo=video">Criar Vídeo</a>
+            <a href="studio.html?tipo=live">Criar Live</a>
+            <a href="studio.html?tipo=shorts">Criar Shorts</a>
+        </div>
+    </header>
+
+    <aside class="sidebar">
+        <a href="index.html">Página Inicial</a>
+        <a href="lives.html">Lives</a>
+        <a href="shorts.html">Shorts</a>
+    </aside>
+
+    <main class="content">
+        <h2>Recomendados</h2>
+        <div id="video-grid" class="video-grid">
+            </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
