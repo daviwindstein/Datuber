@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Datuber Studio</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="content" style="margin-left: 0; text-align: center;">
+        <h1>Datuber Studio</h1>
+        <div style="max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 10px;">
+            <h3>Postar Novo Conteúdo</h3>
+            <input type="text" id="titulo" placeholder="Nome do vídeo/live" style="width: 100%; margin-bottom: 10px;"><br>
+            <textarea id="desc" placeholder="Descrição" style="width: 100%; height: 100px;"></textarea><br>
+            <input type="file" id="foto" style="margin-top: 10px;"><br><br>
+            <button class="btn-criar" onclick="postar()">Publicar agora</button>
+        </div>
+    </div>
+
+    <script>
+        function postar() {
+            alert("Postado com sucesso no Datuber!");
+            window.location.href = "index.html";
+        }
+    </script>
+</body>
+</html>
