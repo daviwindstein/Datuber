@@ -2,177 +2,177 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Datuber</title>
+    <title>Datuber - Oficial</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
     <style>
         /* ESTILO IGUAL À SUA FOTO */
-        body { margin: 0; background-color: #0f0f0f; color: white; font-family: sans-serif; overflow-x: hidden; }
-        
+        body { margin: 0; background: #0f0f0f; color: white; font-family: sans-serif; }
         header { 
             display: flex; justify-content: space-between; align-items: center; 
             padding: 10px 20px; background: #0f0f0f; border-bottom: 1px solid #333;
             position: fixed; width: 100%; top: 0; z-index: 1000;
         }
+        .nav-right { display: flex; gap: 15px; align-items: center; }
+        .icon { cursor: pointer; font-size: 20px; padding: 5px; }
+        .profile-pic { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; object-fit: cover; background: #333; }
 
-        .logo { display: flex; align-items: center; font-size: 22px; font-weight: bold; }
-        
-        .nav-icons { display: flex; gap: 10px; align-items: center; margin-right: 40px; }
-        .nav-icons span, .nav-icons img { cursor: pointer; padding: 5px; border-radius: 5px; }
-        .nav-icons span:hover { background: #333; }
-        
-        .profile-pic { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #555; }
-
-        /* MENU LATERAL DIREITO (DROPDOWN) */
-        .menu-lateral {
+        /* MENU DROPDOWN DIREITO */
+        .dropdown {
             display: none; position: fixed; top: 60px; right: 10px; 
-            background: #1f1f1f; width: 180px; border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 2000;
-            padding: 10px 0;
+            background: #1f1f1f; width: 200px; border-radius: 8px; z-index: 2000;
         }
-        .menu-lateral a {
-            display: block; color: white; padding: 12px 20px;
-            text-decoration: none; font-size: 16px;
-        }
-        .menu-lateral a:hover { background: #333; }
+        .dropdown a { display: block; color: white; padding: 12px 20px; text-decoration: none; cursor: pointer; }
+        .dropdown a:hover { background: #333; }
 
         /* PÁGINAS */
-        .page { display: none; padding: 80px 20px 20px 20px; min-height: 100vh; }
+        .page { display: none; padding: 80px 20px; min-height: 100vh; }
         .active { display: block; }
-
-        /* SHORTS ESTILO VERTICAL */
-        .shorts-container { max-width: 400px; margin: auto; height: 85vh; overflow-y: scroll; scroll-snap-type: y mandatory; }
-        .short-video { 
-            height: 80vh; background: #222; margin-bottom: 20px; border-radius: 15px;
-            scroll-snap-align: start; display: flex; flex-direction: column; justify-content: flex-end; padding: 20px;
-        }
-
-        /* VÍDEO PLAYER */
-        .video-box { width: 100%; max-width: 900px; background: black; aspect-ratio: 16/9; margin-bottom: 15px; }
-        .btn-acao { background: #333; border: none; color: white; padding: 8px 15px; border-radius: 20px; cursor: pointer; margin-right: 10px; }
         
-        .search-container { flex-grow: 1; display: flex; justify-content: center; }
-        .search-bar { background: #121212; border: 1px solid #333; color: white; padding: 8px 20px; border-radius: 20px; width: 50%; }
+        .video-card { margin-bottom: 20px; background: #1a1a1a; padding: 10px; border-radius: 10px; }
+        video { width: 100%; border-radius: 8px; }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">📺 Datuber</div>
-        
-        <div class="search-container">
-            <input type="text" class="search-bar" placeholder="Pesquisar...">
-        </div>
-
-        <div class="nav-icons">
-            <span onclick="showPage('home')">🏠</span>
-            <span onclick="showPage('shorts')">🎬</span>
-            <span onclick="showPage('lives')" style="color: red;">🔴</span>
-            <span onclick="toggleMenu('menuCriar')">➕</span>
-            <img src="https://via.placeholder.com/40" class="profile-pic" onclick="toggleMenu('menuUser')">
+        <div onclick="location.reload()" style="cursor:pointer">📺 <b>Datuber</b></div>
+        <div class="nav-right">
+            <span class="icon" onclick="showPage('home')">🏠</span>
+            <span class="icon" onclick="showPage('shorts')">🎬</span>
+            <span class="icon" onclick="showPage('lives')" style="color:red">🔴</span>
+            <span class="icon" onclick="toggleMenu('menuCriar')">➕</span>
+            <img src="https://via.placeholder.com/35" id="userImg" class="profile-pic" onclick="toggleMenu('menuUser')">
         </div>
     </header>
 
-    <div id="menuCriar" class="menu-lateral">
-        <a href="#" onclick="alert('Criando Vídeo...')">Criar Vídeo</a>
-        <a href="#" onclick="alert('Iniciando Live...')">Criar Live</a>
-        <a href="#" onclick="alert('Criando Short...')">Criar Shorts</a>
+    <div id="menuCriar" class="dropdown">
+        <a onclick="inputVideo.click()">Postar Vídeo</a>
+        <a onclick="alert('Iniciando Live...')">Iniciar Live</a>
+        <a onclick="inputShort.click()">Postar Short</a>
     </div>
 
-    <div id="menuUser" class="menu-lateral">
-        <a href="#" onclick="showPage('meu-canal')">Meu Canal</a>
-        <a href="#" onclick="alert('Abrindo Studio...')">Studio</a>
-        <a href="#" onclick="googleLogin()">Login com Google</a>
-        <a href="#" onclick="alert('Criando conta...')">Criar Conta</a>
-        <a href="#" onclick="alert('Idioma alterado!')">Idioma</a>
-        <hr style="border-color: #333;">
-        <a href="#" onclick="alert('Saindo...')">Sair</a>
+    <div id="menuUser" class="dropdown">
+        <a onclick="showPage('canal')">Meu Canal</a>
+        <a onclick="alert('Studio Aberto')">Studio</a>
+        <a onclick="loginGoogle()">Login com Google</a>
+        <a onclick="inputFoto.click()">Mudar Foto do Canal</a>
+        <a onclick="alert('Saindo...')">Sair</a>
     </div>
+
+    <input type="file" id="inputVideo" hidden accept="video/*" onchange="uploadMidia(this, 'videos')">
+    <input type="file" id="inputShort" hidden accept="video/*" onchange="uploadMidia(this, 'shorts')">
+    <input type="file" id="inputFoto" hidden accept="image/*" onchange="updateFoto(this)">
 
     <div id="home" class="page active">
-        <h3>Vídeos Recomendados</h3>
-        <div style="cursor:pointer" onclick="openVideo('Como ser um Pro no Roblox')">
-            <div class="video-box" style="display:flex; align-items:center; justify-content:center">CLIQUE PARA ASSISTIR</div>
-            <h4>Como ser um Pro no Roblox</h4>
-            <p>snow_minezin • 10k views</p>
-        </div>
+        <h3>Página Inicial</h3>
+        <div id="feedVideos">Carregando vídeos...</div>
     </div>
 
     <div id="shorts" class="page">
-        <div class="shorts-container">
-            <div class="short-video">
-                <h4>Short 1: Gameplay épica</h4>
-                <button class="btn-acao">❤️ Like</button>
-            </div>
-            <div class="short-video">
-                <h4>Short 2: Tutorial rápido</h4>
-                <button class="btn-acao">❤️ Like</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="lives" class="page">
-        <h3 style="color: red;">🔴 AO VIVO AGORA</h3>
-        <div class="video-box"></div>
-        <h4>Live de Domingo - Datuber Hub</h4>
-    </div>
-
-    <div id="player" class="page">
-        <button onclick="showPage('home')" style="color: grey; background: none; border: none; cursor: pointer;">← Voltar</button>
-        <div class="video-box"></div>
-        <h2 id="video-title">Título</h2>
-        <div>
-            <button class="btn-acao">👍 1.2k</button>
-            <button class="btn-acao">🔄 Compartilhar</button>
-            <button class="btn-acao" style="background: white; color: black;">Inscrever-se</button>
-        </div>
-        <div style="margin-top: 20px;">
-            <input type="text" placeholder="Adicione um comentário..." style="width: 100%; background: none; border: none; border-bottom: 1px solid #333; color: white; padding: 10px;">
-        </div>
+        <h3>Shorts</h3>
+        <div id="feedShorts"></div>
     </div>
 
     <script>
-        // FUNÇÃO PARA TROCAR DE PÁGINA
-        function showPage(pageId) {
+        // --- COLE AQUI A SUA CONFIGURACAO DO FIREBASE ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyBE9l22xIL6QB7ASJ80U_UTl86HKL9FoCQ",
+            authDomain: "datuber-69e0c.firebaseapp.com",
+            projectId: "datuber-69e0c",
+            storageBucket: "datuber-69e0c.firebasestorage.app",
+            messagingSenderId: "1056315084872",
+            appId: "1:1056315084872:web:200d96d14241345bd7087d"
+        };
+        // -----------------------------------------------
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+
+        // Trocar Páginas
+        function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            fecharTodosMenus();
+            document.getElementById(id).classList.add('active');
+            fecharMenus();
         }
 
-        // FUNÇÃO PARA ABRIR O VÍDEO NO PLAYER
-        function openVideo(titulo) {
-            showPage('player');
-            document.getElementById('video-title').innerText = titulo;
+        // Abrir/Fechar Menus
+        function toggleMenu(id) {
+            let m = document.getElementById(id);
+            let estaAberto = m.style.display === 'block';
+            fecharMenus();
+            if(!estaAberto) m.style.display = 'block';
         }
 
-        // FUNÇÃO PARA OS MENUS (DROPDOWNS)
-        function toggleMenu(menuId) {
-            const menu = document.getElementById(menuId);
-            const estaAberto = menu.style.display === 'block';
-            fecharTodosMenus();
-            if (!estaAberto) menu.style.display = 'block';
+        function fecharMenus() {
+            document.querySelectorAll('.dropdown').forEach(d => d.style.display = 'none');
         }
 
-        function fecharTodosMenus() {
-            document.querySelectorAll('.menu-lateral').forEach(m => m.style.display = 'none');
+        // Login
+        function loginGoogle() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider).then(res => {
+                document.getElementById('userImg').src = res.user.photoURL;
+                alert("Logado como: " + res.user.displayName);
+            });
         }
 
-        // FECHAR MENUS AO CLICAR FORA
-        window.onclick = function(event) {
-            if (!event.target.matches('.nav-icons span') && !event.target.matches('.profile-pic')) {
-                fecharTodosMenus();
-            }
+        // Mudar Foto
+        function updateFoto(input) {
+            const file = input.files[0];
+            const ref = storage.ref('users/' + (auth.currentUser ? auth.currentUser.uid : 'anonimo') + '/foto.jpg');
+            ref.put(file).then(() => {
+                ref.getDownloadURL().then(url => {
+                    document.getElementById('userImg').src = url;
+                    alert("Foto atualizada!");
+                });
+            });
         }
 
-        // LOGIN COM GOOGLE (SIMULAÇÃO)
-        function googleLogin() {
-            alert("Redirecionando para conta Google...");
-            // Aqui você integraria com o Firebase ou Google Auth API
-            let nome = prompt("Para simular o login, digite seu nome:");
-            if(nome) {
-                document.querySelector('.profile-pic').src = "https://ui-avatars.com/api/?name=" + nome;
-                alert("Bem-vindo ao Datuber, " + nome + "!");
-            }
+        // Postar Vídeo ou Short
+        function uploadMidia(input, pasta) {
+            const file = input.files[0];
+            const titulo = prompt("Dê um título:");
+            const ref = storage.ref(pasta + '/' + Date.now() + "_" + file.name);
+            
+            alert("Enviando... Aguarde.");
+            ref.put(file).then(snap => {
+                snap.ref.getDownloadURL().then(url => {
+                    db.collection(pasta).add({
+                        url: url,
+                        titulo: titulo,
+                        autor: auth.currentUser ? auth.currentUser.displayName : 'Anônimo',
+                        data: new Date()
+                    });
+                    alert("Postado com sucesso!");
+                    carregarConteudo();
+                });
+            });
         }
+
+        // Carregar do Banco de Dados
+        function carregarConteudo() {
+            // Carregar Vídeos
+            db.collection("videos").orderBy("data", "desc").onSnapshot(snap => {
+                let html = "";
+                snap.forEach(doc => {
+                    let v = doc.data();
+                    html += `<div class="video-card">
+                        <video controls src="${v.url}"></video>
+                        <h4>${v.titulo}</h4>
+                        <p style="font-size:12px; color:#aaa">Postado por ${v.autor}</p>
+                    </div>`;
+                });
+                document.getElementById('feedVideos').innerHTML = html || "Nenhum vídeo ainda.";
+            });
+        }
+
+        carregarConteudo();
     </script>
 </body>
 </html>
